@@ -130,6 +130,8 @@ Your browser does not support the canvas element.
   </div>
 </div> 
 
+<p>(Hold 'a' or 'z' while measuring to force a detection/non-detection.)</p>
+
 <script src="complexNumber.js"></script>
 
 <script src="inputHandling.js"></script>
@@ -168,6 +170,7 @@ var Adiv=20;  //see above
 var hbar=1;   //reduced Planck's constant
 var n,n1,k,a,b,i,j,temp,temp1;        //temp variables for calculation
 var mouseX,mouseY;
+var find="neutral";
 
 var particles,useV,vheights;
 
@@ -212,7 +215,7 @@ function measure(fName,vecF,ind,dist){
     prob+=Math.sqrt(Math.pow(vecF[tempI][0],2)+Math.pow(vecF[tempI][1],2));
   }
   //var rand=Math.random()
-  var found=Math.random()<(prob/mag(vecF));
+  var found=find=="neutral"?Math.random()<(prob/mag(vecF)):find;
   console.log(found?"particle found!":"particle not found!");
   document.getElementById("particleFound").innerText=found?"particle found!":"particle not found!";
   //alert(document.getElementById("particleFound").innerText);
@@ -343,6 +346,29 @@ function updateCanvas(){
   }
 }
 
+window.addEventListener('keydown',this.keyPressed,false);
+window.addEventListener('keyup',this.keyReleased,false);
+function keyPressed(e) {
+  //alert(e.key);
+  switch(e.key){
+    case 'a':
+      find=true;
+      break;
+    case 'z':
+      find=false;
+      break;
+  }
+  //alert(find);
+}
+function keyReleased(e){
+  switch(e.key){
+    case 'a':
+    case 'z':
+      find="neutral";
+      break;
+  }
+}  
+  
 //alert(fft([[0,0]],true));
 setToDefault();
 setInterval(function(){
