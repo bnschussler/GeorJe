@@ -68,8 +68,8 @@ function initializeWaveFunction(data){ //'particles' holds potition and momentum
     for(i=0;i<particles.length;i++){
       //alert([n,i,Math.sin(n/len*2*PI*particles[i][1])*Math.exp(-Math.pow(n-particles[i][0],2)/width)]);
       if(useP[i]){
-        temp[0]+=Math.sin(n/len*2*PI*particles[i][1])*Math.exp(-Math.pow((n-particles[i][0])/width/data[2][i],2));
-        temp[1]+=-Math.cos(n/len*2*PI*particles[i][1])*Math.exp(-Math.pow((n-particles[i][0])/width/data[2][i],2));
+        temp[0]+=Math.sin(n/len*2*PI*particles[i][1])*Math.exp(-Math.pow((n-particles[i][0])/width/data[2][i],2))/Math.sqrt(data[2][i]);
+        temp[1]+=-Math.cos(n/len*2*PI*particles[i][1])*Math.exp(-Math.pow((n-particles[i][0])/width/data[2][i],2))/Math.sqrt(data[2][i]);
       }
     }
     psi=psi.concat([temp]);
