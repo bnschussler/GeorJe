@@ -34,24 +34,23 @@ var tInputs=[
 document.getElementById("timeStepRange")
 ]
 
-function setToDefault(){
+function setToDefault(data){
 	run=false;
 	for(var i=0;i<(inputs.concat(vInputs)).length;i++){
-		inputs.concat(vInputs)[i].value=[100,163,100,-163,200,80,true,false,false,30,30,30,true,false,false,false,0,0,0,0,14000,14000,14000,14000][i];
-		inputs.concat(vInputs)[i].checked=[100,163,100,-163,200,80,true,false,false,30,30,30,true,false,false,false,0,0,0,0,14000,14000,14000,14000][i];
+		inputs.concat(vInputs)[i].value=data[i];
+		inputs.concat(vInputs)[i].checked=data[i];
 	}
-	document.getElementById("timeStepRange").value=20;
+	document.getElementById("timeStepRange").value=data[24];
+  	document.getElementById("measure").value=data[25];	
 	setT();
 	setV();
 	setPsi();
-	document.getElementById("measure").value=20;
 }
 
 function reset(){
 	run=false;
 	setPsi();
 	setV();
-	document.getElementById("timeStepRange").value=20;
 	setT();
 }
 
