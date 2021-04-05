@@ -41,7 +41,7 @@ function setToDefault(data){
 		inputs.concat(vInputs)[i].checked=data[i];
 	}
 	document.getElementById("timeStepRange").value=data[24];
-  	document.getElementById("measure").value=data[25];	
+  document.getElementById("measure").value=data[25];
 	setT();
 	setV();
 	setPsi();
@@ -93,6 +93,9 @@ function setPsi(){
 							[inputs[6].checked,inputs[7].checked,inputs[8].checked],
 							[Math.exp(inputs[9].value/10-6),Math.exp(inputs[10].value/10-6),Math.exp(inputs[11].value/10-6)]]);
 	//alert("done!");
+  document.getElementById("s1").style.display=inputs[6].checked?"block":"none";
+  document.getElementById("s2").style.display=inputs[7].checked?"block":"none";
+  document.getElementById("s3").style.display=inputs[8].checked?"block":"none";
 }
 
 function setV(){
@@ -107,7 +110,7 @@ function setV(){
     	  if(useV[i]){ 
     	    //console.log((Math.abs(mod(n-vPos[1],len)-len/2)<10)?vheights[1]:0);
     	    temp+=[Math.exp(-Math.pow(mod(n-vPos[0],len)/len-.5,2)*len)*vheights[0],
-    	           (Math.abs(mod(n-vPos[1],len)-len/2)<10)?vheights[1]:0,
+    	           (Math.abs(mod(n-vPos[1],len)-len/2)<50)?vheights[1]:0,
     	           Math.sin(mod(n-vPos[2],len)/len*2*PI)*vheights[2],
     	           Math.pow((mod(n-vPos[3],len)/len-.5)*2,2)*vheights[3]][i];
     	  }
@@ -115,6 +118,11 @@ function setV(){
     	//console.log(temp);
     	V=V.concat(temp);
 	}
+
+  document.getElementById("b1").style.display=vInputs[0].checked?"block":"none";
+  document.getElementById("b2").style.display=vInputs[1].checked?"block":"none";
+  document.getElementById("b3").style.display=vInputs[2].checked?"block":"none";
+  document.getElementById("b4").style.display=vInputs[3].checked?"block":"none";
 }
 
 inputs.forEach(function(element) {
