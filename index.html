@@ -44,26 +44,26 @@ body{
 <h2>What is this?</h2>
 <p>   This program simulates a particle (like an electron) moving according to the laws of Quantum Mechanics (specifically the Schrödinger Equation). In this setup, a particle living in one dimension (two if you count time) moves in a "potential field", shown in purple. The potential field is like the terrain the particle moves through — a high potential is like a hill, and low is like a valley. The particle may not be able to go over a high increase in the potential, or lose momentum in the process, and can gain momentum by moving from high to low potential. 
 <p>In QM, the particle doesn't have a definite position and momentum — only a wave function. The position space representation of the particle (where it is) is shown on the top half, and the momentum space (how fast it is) on the bottom. The wave function is a complex number field, so the real component is represented by red, and the imaginary component in blue. The green is the probability density, or how likely it would be to find the particle at that point. You can click on the wave function (either position or momentum) to "measure" it, which simulates wave function collapse.
-<p>Preset 1's settings demonstrate quantum tunneling (a small amonut of the probability gets past the wall), and Preset 2 simulates a particle trapped in a potential well, but there is plenty of room to mess around with the setup! You can change the position, momentum, and uncertainty of the particle (each of which affect the position and momentum spaces differently), toggle the checkboxes to put the particle in a superposition of multiple states/mix and match the potential fields (of which I have made four presets), measure the particle, and speed up or even reverse time. Have fun!</p>
+<p>Preset 1's settings demonstrate quantum tunneling (a small amonut of the probability gets past the wall), and Preset 2 simulates a particle trapped in a potential well, but there is plenty of room to mess around with the setup! You can change the position, momentum, and uncertainty of the particle (each of which affect the position and momentum spaces differently), toggle the checkboxes to put the particle in a superposition of multiple states/mix and match the potential fields, measure the particle, and speed up or even reverse time. Have fun!</p>
  <div class="row">
   <div class="column">
 <h2>Particle:</h2>
 <h4>Superposition 1: <input type="checkbox" id="pt1" name="pt1" value=""></h4>
 <p>
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="s1">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="p1">
     Momentum: <input type="range" min="-300" max="300" value="160" class="slider" id="v1">
     Uncertainty: <input type="range" min="0" max="70" value="30" class="slider" id="w1">
     </BLOCKQUOTE>
 </p>
 <h4>Superposition 2: <input type="checkbox" id="pt2" name="pt2" value=""></h4>
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="s2">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="p2">
     Momentum: <input type="range" min="-300" max="300" value="160" class="slider" id="v2">
     Uncertainty: <input type="range" min="0" max="70" value="30" class="slider" id="w2">
     </BLOCKQUOTE>
 <h4>Superposition 3: <input type="checkbox" id="pt3" name="pt3" value=""></h4>
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="s3">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="p3">
     Momentum: <input type="range" min="-300" max="300" value="160" class="slider" id="v3">
     Uncertainty: <input type="range" min="0" max="70" value="30" class="slider" id="w3">
@@ -76,28 +76,28 @@ body{
 <h2>Potential Field:</h2>
 Smooth barrier
 <input type="checkbox" id="wall" name="wall" value=true>
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="b1">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="a1">    
     Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h1">
     </BLOCKQUOTE>
 <br/>
 Discrete barrier
 <input type="checkbox" id="wall1" name="wall1" value="">
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="b2">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="a2">
     Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h2">
     </BLOCKQUOTE>
 <br/>
 Sine wave
 <input type="checkbox" id="sin" name="sin" value="">
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="b3">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="a3">
     Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h3">
     </BLOCKQUOTE>
 <br/>
 Parabolic well
 <input type="checkbox" id="parabola" name="parabola" value="">
-    <BLOCKQUOTE>
+    <BLOCKQUOTE id="b4">
     Position: <input type="range" min="0" max="800" value="100" class="slider" id="a4">
     Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h4">
     </BLOCKQUOTE>
@@ -376,8 +376,8 @@ function keyReleased(e){
       find="neutral";
       break;
   }
-}  
-  
+}
+
 //alert(fft([[0,0]],true));
 setToDefault([100,163,100,-163,200,80,true,false,false,30,30,30,true,false,false,false,0,0,0,0,14000,14000,14000,14000,20,20]);
 setInterval(function(){
