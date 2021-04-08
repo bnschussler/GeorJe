@@ -1,5 +1,5 @@
 # Schrodinger Equation Simulation
-Simulation of a quantum particle in 1(+1) dimentions
+Simulation of a quantum particle in 1(+1) dimensions
 
 This program is designed with computers in mind. If you're on a mobile device, it might be harder to use.
 
