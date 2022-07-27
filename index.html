@@ -1,394 +1,189 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">  
-<style>
-  /*copied from W3Schools*/
-* {
-  box-sizing: border-box;
-}
-
-/* Create two equal columns that floats next to each other */
-.column {
-  float: left;
-  width: 200px;
-  padding: 10px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.button{
-  width: 150px;
-  height: 50px;
-}
-
-p {
-text-indent: 2.0em;
-}
-
-body{
-  min-width:1420px;
-}
-</style>
-</head>
-
-<body>
-<h1>Simulation of the Schrödinger Equation</h1>
-  <p>This program is designed with computers in mind. If you're on a mobile device, it might be harder to use.</p>
-<h2>What is this?</h2>
-<p>   This program simulates a particle (like an electron) moving according to the laws of Quantum Mechanics (specifically the Schrödinger Equation). In this setup, a particle living in one dimension (two if you count time) moves in a "potential field", shown in purple. The potential field is like the terrain the particle moves through — a high potential is like a hill, and low is like a valley. The particle may not be able to go over a high increase in the potential, or lose momentum in the process, and can gain momentum by moving from high to low potential. 
-<p>In QM, the particle doesn't have a definite position and momentum — only a wave function. The position space representation of the particle (where it is) is shown on the top half, and the momentum space (how fast it is) on the bottom. The wave function is a complex number field, so the real component is represented by red, and the imaginary component in blue. The green is the probability density, or how likely it would be to find the particle at that point. You can click on the wave function (either position or momentum) to "measure" it, which simulates wave function collapse.
-<p>Preset 1's settings demonstrate quantum tunneling (a small amonut of the probability gets past the wall), and Preset 2 simulates a particle trapped in a potential well, but there is plenty of room to mess around with the setup! You can change the position, momentum, and uncertainty of the particle (each of which affect the position and momentum spaces differently), toggle the checkboxes to put the particle in a superposition of multiple states/mix and match the potential fields, measure the particle, and speed up or even reverse time. Have fun!</p>
-<p>This is a project I originally made in Processing, and recently transcribed to JavaScript.</p> 
-  <div class="row">
-  <div class="column">
-<h2>Particle:</h2>
-<h4>Superposition 1: <input type="checkbox" id="pt1" name="pt1" value=""></h4>
-<p>
-    <BLOCKQUOTE id="s1">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="p1">
-    Momentum: <input type="range" min="-300" max="300" value="160" class="slider" id="v1">
-    Uncertainty: <input type="range" min="0" max="70" value="30" class="slider" id="w1">
-    </BLOCKQUOTE>
-</p>
-<h4>Superposition 2: <input type="checkbox" id="pt2" name="pt2" value=""></h4>
-    <BLOCKQUOTE id="s2">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="p2">
-    Momentum: <input type="range" min="-300" max="300" value="160" class="slider" id="v2">
-    Uncertainty: <input type="range" min="0" max="70" value="30" class="slider" id="w2">
-    </BLOCKQUOTE>
-<h4>Superposition 3: <input type="checkbox" id="pt3" name="pt3" value=""></h4>
-    <BLOCKQUOTE id="s3">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="p3">
-    Momentum: <input type="range" min="-300" max="300" value="160" class="slider" id="v3">
-    Uncertainty: <input type="range" min="0" max="70" value="30" class="slider" id="w3">
-    </BLOCKQUOTE>
-
-  </div>
-
-  <div class="column">
-
-<h2>Potential Field:</h2>
-Smooth barrier
-<input type="checkbox" id="wall" name="wall" value=true>
-    <BLOCKQUOTE id="b1">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="a1">    
-    Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h1">
-    </BLOCKQUOTE>
-<br/>
-Discrete barrier
-<input type="checkbox" id="wall1" name="wall1" value="">
-    <BLOCKQUOTE id="b2">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="a2">
-    Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h2">
-    </BLOCKQUOTE>
-<br/>
-Sine wave
-<input type="checkbox" id="sin" name="sin" value="">
-    <BLOCKQUOTE id="b3">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="a3">
-    Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h3">
-    </BLOCKQUOTE>
-<br/>
-Parabolic well
-<input type="checkbox" id="parabola" name="parabola" value="">
-    <BLOCKQUOTE id="b4">
-    Position: <input type="range" min="0" max="800" value="100" class="slider" id="a4">
-    Height: <input type="range" min="-20000" max="20000" value="100" class="slider" id="h4">
-    </BLOCKQUOTE>
-</p>
-  </div>
-
-  <div class="column">
-<h3>Speed: <input type="text" id="timeStepText" size="10"></h3>
-<input type="range" min="-100" max="100" value="20" class="slider" id="timeStepRange">
-<br/>
-
-<h3>Measurement Size</h3>
-<input type="range" min="0" max="200" value="20" class="slider" id="measure">
-<p id="particleFound"></p>
-</br></br></br>
-<button type="button" class="button" onclick="run=true">Run Simulation</button> 
-</br></br></br>
-<button type="button" class="button" onclick="run=false">Pause Simulation</button> 
-</br></br></br>
-<button type="button" class="button" onclick="reset()">Reset</button>
-</br></br></br>
-
-<button type="button" class="button" onclick="setToDefault(
-[100,163,100,-163,200,80,true,false,false,30,30,30,true,false,false,false,0,0,0,0,14000,14000,14000,14000,20,20]
-)">Preset 1</button> 
-
-</br></br></br>
-
-<button type="button" class="button" onclick="setToDefault(
-[100,0,100,-163,200,80,true,false,false,30,30,30,false,false,false,true,0,0,0,0,14000,14000,14000,14000,60,20]
-)">Preset 2</button> 
-  </div>
-
-  <div class="">
-<canvas id="myCanvas" width="800" height="700"
-style="border:1px solid #c3c3c3;">
-Your browser does not support the canvas element.
-</canvas>
-  </div>
-</div> 
-
-<p>(Hold 'a' or 'z' while measuring to force a detection/non-detection.)</p>
-
-<script src="complexNumber.js"></script>
-
-<script src="inputHandling.js"></script>
-
-<script>
-
-const PI=3.14159;
-
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
-ctx.fillStyle="#808080";
-
-var width=document.getElementById("myCanvas").width;
-var height=document.getElementById("myCanvas").height;
-
-//approximates Schrodinger equation using foruier transforms (based off https://jakevdp.github.io/blog/2012/09/05/quantum-python/ and https://anarchy.website/2017/09/24/schrodinger.html)
-//fast forier transform: https://discourse.processing.org/t/fft-of-1d-array-of-1024-measurements/7901/10
-
-var run=false;
-
-var len=1024;       //how fine the divisions of position are
-var t=.0001;         //frametime (length of one frame)
-var xmaxbound=10;   //upper bound for position space
-var xminbound=0;    //lower bound for position space
-var m=1;    //mass of particle
-
-var dx=(xmaxbound-xminbound)/len;
-var dp=2*PI/dx;
-var psi=new Array(len);  //position waveform over line [0,1]; second index is for 0:real,1:imag
-var A=new Array(len);  //momentum waveform over line [0,1]; second index is for 0:real,1:imag
-var A1=new Array(len); //to save momentum space (FFT overwrites input arrays)
-var V=new Array(len);     //potential field over line [0,1]
-var psi=new Array(len).fill(new Array(2).fill(0));
-var Vmax=14000;    //for normalization on graph
-var Adiv=20;  //see above
-var hbar=1;   //reduced Planck's constant
-var n,n1,k,a,b,i,j,temp,temp1;        //temp variables for calculation
-var mouseX,mouseY;
-var find="neutral";
-
-var particles,useV,vheights;
-
-function rot(x,t){  //rotate complex variable (multiply by e^it)
-  return [x[0]*Math.cos(t)-x[1]*Math.sin(t),+x[1]*Math.cos(t)+x[0]*Math.sin(t)];
-}
-
-function mod(a,b){
-  return ((a%b)+b)%b;
-}
-
-function mag(vecF){
-  //alert(vecF);
-  var out=0
-  for(var i=0;i<vecF.length;i++){
-    out+=Math.sqrt(Math.pow(vecF[i][0],2)+Math.pow(vecF[i][1],2));
-  }
-  return out;
-}
-
-function norm(vecF,magOut){
-  var magIn=mag(vecF);
-  //alert([magIn,magOut]);
-  for(var i=0;i<vecF.length;i++){
-    vecF[i]=[vecF[i][0]/magIn*magOut,vecF[i][1]/magIn*magOut];
-  } 
-}
-
-
-canvas.addEventListener("click",function(){
-  measure(mouseY<height/2?"psi":"A",mouseY<height/2?psi:A,Math.floor(mouseX/canvas.width*len),Number(document.getElementById("measure").value));
-},false);
-
-function measure(fName,vecF,ind,dist){
-  var prob=0
-  //alert(dist);
-  for(i=Math.max(0,ind-dist);(i<=ind+dist && i<vecF.length);i++){
-    //alert(i);
-    //alert([ind,dist]);
-    //alert(Number(ind)+Number(dist));
-    tempI=fName=="A"?mod(i-len/2,len):i;
-    prob+=Math.sqrt(Math.pow(vecF[tempI][0],2)+Math.pow(vecF[tempI][1],2));
-  }
-  //var rand=Math.random()
-  var found=find=="neutral"?Math.random()<(prob/mag(vecF)):find;
-  console.log(found?"particle found!":"particle not found!");
-  document.getElementById("particleFound").innerText=found?"particle found!":"particle not found!";
-  //alert(document.getElementById("particleFound").innerText);
-  //console.log([ind,dist]);
-  //temp=0;
-  for(i=0;i<len;i++){
-    //console.log([i,Math.abs(ind-i)<dist,Math.abs(ind-i)<dist?!found:found]);
-    //alert(i);
-    //alert(ind);
-    //alert(ind-i);
-    //alert(Math.abs(ind-i)<dist?!found:found);
-    tempI=fName=="A"?mod(i-len/2,len):i;
-    if(Math.abs(ind-tempI)<dist?!found:found){
-      vecF[i]=[0,0];
-    }
-  }
-  if(fName=="psi"){
-    norm(psi,12);
-    A=fft(psi,true);
-  }
-  if(fName=="A"){
-    psi=fft(A,false);
-    norm(psi,12);
-    A=fft(psi,true);
-  }
-}
-
-function updateWaveFunction(){
-                                              //implementation of wave equation
-    for(n=0;n<len;n++){         //half step in position space + begin calculation of A from psi
-      psi[n]=rot(psi[n],-(t*V[n]/hbar/2));
-    }
-    A=fft(psi,true);
-    //alert(psi);
-    //alert(A);
-    //a=m*xminbound*dp/len;
-    //for(n=0;n<len;n++){
-    //  A[n]=rot(A[n],a);                      //this is the current momuntum space, A1 will be used now so that A will save the momentum for display
-    //}
-    for(n=0;n<len;n++){                      //half step in momentum space + begin calculation of psi from A
-      A1[n]=rot(A[n],-(t*hbar*(Math.pow((mod(n+len/2,len)-len/2),2)/(2*m))));
-    }
-    psi=fft(A1,false);
-    for(n=0;n<len;n++){
-      psi[n]=rot(psi[n],-(t*V[n]/hbar/2));
-    }
-    
-    norm(psi,12);
-    //stop();
-}
-
-
-function updateCanvas(){
-  //console.log(mag(A));
-  ctx.fillRect(0,0,width,height);
-
-  ctx.lineWidth = 2;
-
-  ctx.beginPath();
-  ctx.moveTo(0,(height)/4);
-  ctx.strokeStyle = "#FF00FF";
-  for(n=0;n<len;n++){   //scalar potential field
-    ctx.lineTo(width*n/len,(-V[n]*1/Vmax*height+height)/4);
-  }
-  ctx.stroke();
-
-  ctx.lineWidth = 1;
-
-  ctx.beginPath();
-  ctx.moveTo(0,(height)/4);
-  ctx.strokeStyle = "#0000FF";
-  for(n=0;n<len;n++){   //position space -- imaginary axis
-    //alert(psi[n]);
-    ctx.lineTo(width*n/len,(-psi[n][1]*height+height)/4);
-  }
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(0,(height)/4);
-  ctx.strokeStyle = "#FF0000";
-  for(n=0;n<len;n++){   //position space -- real axis
-    ctx.lineTo(width*n/len,(-psi[n][0]*height+height)/4);
-  }
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(0,(height)/4);
-  ctx.strokeStyle = "#00FF00";
-  for(n=0;n<len;n++){   //position space -- probability
-    ctx.lineTo(width*n/len,-((Math.pow(psi[n][0],2)+Math.pow(psi[n][1],2))*height*10-height)/4);
-  }
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(0,(3*height)/4);
-  ctx.strokeStyle = "#0000FF";
-  for(n=0;n<len;n++){   //momentum space -- imaginary axis
-    k=mod(n-len/2,len);
-    ctx.lineTo(width*n/len,(-A[k][1]/Adiv*height+3*height)/4);
-  }
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(0,(3*height)/4);
-  ctx.strokeStyle = "#FF0000";
-  for(n=0;n<len;n++){   //momentum space -- real axis
-    k=mod(n-len/2,len);
-    ctx.lineTo(width*n/len,(-A[k][0]/Adiv*height+3*height)/4);
-  }
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(0,height*0.75);
-  ctx.strokeStyle = "#00FF00";
-  for(n=0;n<len;n++){   //momentum space -- probability
-    k=mod(n-len/2,len);
-    ctx.lineTo(width*n/len,-(Math.pow(A[k][0]/Adiv,2)+Math.pow(A[k][1]/Adiv,2))*1000+height*0.75);
-  }
-  ctx.stroke();
-
-  if(mouseX>=0 && mouseY>=0){
-    temp=Number(document.getElementById("measure").value);
-    //console.log([temp]);
-    ctx.strokeStyle = "#FFFF00";
-    ctx.beginPath();
-    ctx.rect(mouseX-temp/len*width,height/8+mouseY-mod(mouseY,height/2),temp*2/len*width,height/4);
-    ctx.stroke();
-  }
-}
-
-window.addEventListener('keydown',this.keyPressed,false);
-window.addEventListener('keyup',this.keyReleased,false);
-function keyPressed(e) {
-  //alert(e.key);
-  switch(e.key){
-    case 'a':
-      find=true;
-      break;
-    case 'z':
-      find=false;
-      break;
-  }
-  //alert(find);
-}
-function keyReleased(e){
-  switch(e.key){
-    case 'a':
-    case 'z':
-      find="neutral";
-      break;
-  }
-}
-
-//alert(fft([[0,0]],true));
-setToDefault([100,163,100,-163,200,80,true,false,false,30,30,30,true,false,false,false,0,0,0,0,14000,14000,14000,14000,20,20]);
-setInterval(function(){
-  updateCanvas(); 
-  if(run){
-    updateWaveFunction();
-    //alert(A);
-  }
-}, 30);  //actually run the code
-//updateCanvas();
-</script>
-</body>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="style.css">
+      <style>
+         button{
+         width: calc(20% - 10px);
+         height: 50px;
+         margin: 5px;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>GeorJe: A Simulation of the Schrödinger Equation</h1>
+      <div class="row interactive">
+         <div class="column">
+            <canvas id="myCanvas" width="600" height="600"
+               style="border:1px solid #c3c3c3;">
+               Your browser does not support the canvas element.
+            </canvas>
+         </div>
+         <div class="column pad">
+            <div class="row">
+               <button type="button" class="button" onclick="run=true">Start</button> 
+               <button type="button" class="button" onclick="run=false">Pause</button> 
+               <button type="button" class="button" onclick="reset()">Reset</button>
+               <button type="button" class="button" onclick="setToDefault(
+                  [100,163,100,-163,200,80,true,false,false,30,30,30,true,false,false,false,0,0,0,0,14000,14000,14000,14000,20,20]
+                  )">Preset 1</button> 
+               <button type="button" class="button" onclick="setToDefault(
+                  [100,0,100,-163,200,80,true,false,false,30,30,30,false,false,false,true,0,0,0,0,14000,14000,14000,14000,60,20]
+                  )">Preset 2</button> 
+            </div>
+            <div class="row pad">
+               <div class="column side_bordered">
+                  <h2>Particle:</h2>
+                  <div class="dropdown column">
+                     <label for="pt1" class="toggle">
+                        <h4>Superposition 1: <input type="checkbox" id="pt1" name="pt1" value=""></h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="p1">
+                        </div>
+                        <div class="option">
+                           <p>Momentum:</p>
+                           <input type="range" min="-300" max="300" value="160" class="slider" id="v1">
+                        </div>
+                        <div class="option">
+                           <p>Uncertainty:</p>
+                           <input type="range" min="0" max="70" value="30" class="slider" id="w1">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="dropdown column">
+                     <label for="pt2" class="toggle">
+                        <h4>Superposition 2: <input type="checkbox" id="pt2" name="pt2" value=""></h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="p2">
+                        </div>
+                        <div class="option">
+                           <p>Momentum:</p>
+                           <input type="range" min="-300" max="300" value="160" class="slider" id="v2">
+                        </div>
+                        <div class="option">
+                           <p>Uncertainty:</p>
+                           <input type="range" min="0" max="70" value="30" class="slider" id="w2">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="dropdown column">
+                     <label for="pt3" class="toggle">
+                        <h4>Superposition 3: <input type="checkbox" id="pt3" name="pt3" value=""></h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="p3">
+                        </div>
+                        <div class="option">
+                           <p>Momentum:</p>
+                           <input type="range" min="-300" max="300" value="160" class="slider" id="v3">
+                        </div>
+                        <div class="option">
+                           <p>Uncertainty:</p>
+                           <input type="range" min="0" max="70" value="30" class="slider" id="w3">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="column side_bordered">
+                  <h2>Potential Field:</h2>
+                  <div class="dropdown column">
+                     <label for="wall" class="toggle">
+                        <h4>Smooth barrier 
+                           <input type="checkbox" id="wall" name="wall" value=true>
+                        </h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="a1">   
+                        </div>
+                        <div class="option">
+                           <p>Height:</p>
+                           <input type="range" min="-20000" max="20000" value="100" class="slider" id="h1">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="dropdown column">
+                     <label for="wall1" class="toggle">
+                        <h4>Discrete barrier
+                           <input type="checkbox" id="wall1" name="wall1" value="">
+                        </h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="a2">
+                        </div>
+                        <div class="option">
+                           <p>Height:</p>
+                           <input type="range" min="-20000" max="20000" value="100" class="slider" id="h2">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="dropdown column">
+                     <label for="sin" class="toggle">
+                        <h4>Sine wave
+                           <input type="checkbox" id="sin" name="sin" value="">
+                        </h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="a3">
+                        </div>
+                        <div class="option">
+                           <p>Height:</p>
+                           <input type="range" min="-20000" max="20000" value="100" class="slider" id="h3">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="dropdown column">
+                     <label for="parabola" class="toggle">
+                        <h4>Parabolic well
+                           <input type="checkbox" id="parabola" name="parabola" value="">
+                        </h4>
+                     </label>
+                     <div class="options">
+                        <div class="option">
+                           <p>Position:</p>
+                           <input type="range" min="0" max="800" value="100" class="slider" id="a4">
+                        </div>
+                        <div class="option">
+                           <p>Height:</p>
+                           <input type="range" min="-20000" max="20000" value="100" class="slider" id="h4">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="column">
+                  <h3>Speed: <input type="text" id="timeStepText" size="10"></h3>
+                  <input type="range" min="-100" max="100" value="20" class="slider" id="timeStepRange">
+                  <br/>
+                  <h3>Measurement Size</h3>
+                  <input type="range" min="0" max="200" value="20" class="slider" id="measure">
+                  <p id="particleFound"></p>
+               </div>
+            </div>
+            <p>(Hold 'a' or 'z' while measuring to force a detection/non-detection.)</p>
+         </div>
+      </div>
+      <h2>What is this?</h2>
+      <p>This program simulates a particle (like an electron) moving according to the laws of Quantum Mechanics (specifically the Schrödinger Equation). In this setup, a particle living in one dimension (two if you count time) moves in a "potential field", shown in purple. The potential field is like the terrain the particle moves through — a high potential is like a hill, and low is like a valley. The particle may not be able to go over a high increase in the potential, or lose momentum in the process, and can gain momentum by moving from high to low potential. 
+      <p>In QM, the particle doesn't have a definite position and momentum — only a wave function. The position space representation of the particle (where it is) is shown on the top half, and the momentum space (how fast it is) on the bottom. The wave function is a complex number field, so the real component is represented by red, and the imaginary component in blue. The green is the probability density, or how likely it would be to find the particle at that point. You can click on the wave function (either position or momentum) to "measure" it, which simulates wave function collapse.
+      <p>Preset 1's settings demonstrate quantum tunneling (a small amonut of the probability gets past the wall), and Preset 2 simulates a particle trapped in a potential well, but there is plenty of room to mess around with the setup! You can change the position, momentum, and uncertainty of the particle (each of which affect the position and momentum spaces differently), toggle the checkboxes to put the particle in a superposition of multiple states/mix and match the potential fields, measure the particle, and speed up or even reverse time. Have fun!</p>
+      <p>This is a project I originally made in Processing and transcribed to JavaScript.</p>
+      <script src="complexNumber.js"></script>
+      <script src="inputHandling.js"></script>
+      <script src="simulation.js"></script>
+      <script src="guiHandling.js"></script>
+   </body>
 </html>

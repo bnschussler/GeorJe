@@ -1,0 +1,117 @@
+* {
+  box-sizing: border-box;
+}
+
+body{
+	margin: 50px;
+	background: #ffffff;
+}
+
+canvas{
+	width: 100%;
+	float: right;
+}
+
+h1,.interactive h2,.interactive h3,.interactive h4,.interactive h5,.interactive p{
+	text-align:center;
+}
+
+.interactive h1,.interactive h2,.interactive h3,.interactive h4,.interactive h5,.interactive p{
+	color: #cfcfcf;
+}
+
+h1, h2, h3, h4, h5, p, button{
+	font-family: Arial, Helvetica, sans-serif;	
+}
+
+body > p{
+	margin: 20px;
+}
+
+input[type=text]{
+	border-radius: 5px;
+	border: none;
+	background-color: #e0e0e0;
+	width: 4ch;
+}
+
+button{
+	border: none;
+	border-radius: 5px;
+	font-size: 12pt;
+	transition: background .125s;
+}
+
+button:hover{
+	background: #b0b0b0;
+}
+button:active{
+	background: #909090;
+}
+
+
+.column > *{
+    display: block;
+    clear: both;
+    /*border: 1px solid green;*/ 
+}
+
+.pad > *{
+	padding: 10px;
+}
+
+.row > *{
+	display: inline-block;
+	float: left;
+	clear: none;
+	/*border: 1px solid black;*/
+
+}
+
+.interactive{
+	margin: 24px auto;
+	display: table; /*no clue why this works, but this seems to be the only display type that makes the div center*/
+	padding: 10px;
+	border-radius: 5px;
+	background: #303030;
+}
+
+.dropdown .toggle,.options {
+	text-align: center;
+	padding: 10px;
+	transition: background-color .25s;
+}
+
+.dropdown *{
+	padding: 0px;
+	margin: 0px;
+}
+
+.side_bordered{
+	border-right: 1px solid #808080;
+}
+
+.dropdown{
+	margin: 5px;
+	border-top: 1px solid #808080;
+}
+
+.toggle:hover{
+	background: #808080 !important;
+}
+
+
+.toggle{
+	border-radius: 5px;
+}
+
+.dropdown .toggle input{
+	width: 0px;
+	height: 0px;
+	opacity: 0;
+}
+
+.dropdown .options{
+	transition: height 1s ease;
+	overflow: hidden;
+}

@@ -1,4 +1,8 @@
-document.getElementById('timeStepText').readOnly = true;
+function isNumeric(str) { //from https://stackoverflow.com/questions/175739/how-can-i-check-if-a-string-is-a-valid-number
+  if (typeof str != "string") return false // we only process strings!  
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
 
 var inputs=[
 document.getElementById("p1"),
@@ -36,12 +40,16 @@ document.getElementById("timeStepRange")
 
 function setToDefault(data){
 	run=false;
-	for(var i=0;i<(inputs.concat(vInputs)).length;i++){
+	for(let i=0;i<(inputs.concat(vInputs)).length;i++){
 		inputs.concat(vInputs)[i].value=data[i];
 		inputs.concat(vInputs)[i].checked=data[i];
+    let evt = new CustomEvent('change');
+    inputs.concat(vInputs)[i].dispatchEvent(evt);
 	}
 	document.getElementById("timeStepRange").value=data[24];
   document.getElementById("measure").value=data[25];
+  let evt = new CustomEvent('input');
+  document.getElementById("timeStepRange").dispatchEvent(evt);
 	setT();
 	setV();
 	setPsi();
@@ -92,10 +100,6 @@ function setPsi(){
 								[inputs[4].value/800*len,inputs[5].value*1]],
 							[inputs[6].checked,inputs[7].checked,inputs[8].checked],
 							[Math.exp(inputs[9].value/10-6),Math.exp(inputs[10].value/10-6),Math.exp(inputs[11].value/10-6)]]);
-	//alert("done!");
-  document.getElementById("s1").style.display=inputs[6].checked?"block":"none";
-  document.getElementById("s2").style.display=inputs[7].checked?"block":"none";
-  document.getElementById("s3").style.display=inputs[8].checked?"block":"none";
 }
 
 function setV(){
@@ -118,11 +122,6 @@ function setV(){
     	//console.log(temp);
     	V=V.concat(temp);
 	}
-
-  document.getElementById("b1").style.display=vInputs[0].checked?"block":"none";
-  document.getElementById("b2").style.display=vInputs[1].checked?"block":"none";
-  document.getElementById("b3").style.display=vInputs[2].checked?"block":"none";
-  document.getElementById("b4").style.display=vInputs[3].checked?"block":"none";
 }
 
 inputs.forEach(function(element) {
@@ -138,15 +137,31 @@ vInputs.forEach(function(element) {
 });
 
 function setT(){
-	t=document.getElementById("timeStepRange").value/200000;
-	document.getElementById("timeStepText").value=Math.round(t*1000000)/100+"x"
+  if(isNumeric(document.getElementById("timeStepText").value)){
+	 t=document.getElementById("timeStepText").value/10000;
+  }
+  else{
+    t=document.getElementById("timeStepRange").value/200000;
+  }
 }
 
-tInputs.forEach(function(element) {
+document.getElementById("timeStepRange").addEventListener("input",function(){
+  document.getElementById("timeStepText").value=Math.round(document.getElementById("timeStepRange").value*5)/100;
+  setT();
+});
+
+document.getElementById("timeStepText").addEventListener("input",function(){
+  if(isNumeric(document.getElementById("timeStepText").value)){
+    document.getElementById("timeStepRange").value=document.getElementById("timeStepText").value*20;
+  }
+  setT();
+});
+
+/*tInputs.forEach(function(element) {
     element.addEventListener("input", function() {
     	setT();
     });
-});
+});*/
 
 var canvas=document.getElementById("myCanvas");
 document.addEventListener("mousemove", updatePosition, false);
@@ -154,8 +169,8 @@ function updatePosition(e) {
   var rect = canvas.getBoundingClientRect();
   if(e.clientX-rect.left>0 && e.clientX-rect.left<canvas.width &&
   	 e.clientY-rect.top>0 && e.clientY-rect.top<canvas.height){
-  	mouseX=e.clientX-rect.left;
-  	mouseY=e.clientY-rect.top;
+  	mouseX=(e.clientX-rect.left)*width/rect.width;
+  	mouseY=(e.clientY-rect.top)*height/rect.height;
   }
   else{
   	mouseX=-1;
