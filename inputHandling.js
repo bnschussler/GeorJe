@@ -167,8 +167,8 @@ var canvas=document.getElementById("myCanvas");
 document.addEventListener("mousemove", updatePosition, false);
 function updatePosition(e) {
   var rect = canvas.getBoundingClientRect();
-  if(e.clientX-rect.left>0 && e.clientX-rect.left<canvas.width &&
-  	 e.clientY-rect.top>0 && e.clientY-rect.top<canvas.height){
+  if(e.clientX-rect.left>0 && e.clientX-rect.left<rect.width &&
+  	 e.clientY-rect.top>0 && e.clientY-rect.top<rect.height){
   	mouseX=(e.clientX-rect.left)*width/rect.width;
   	mouseY=(e.clientY-rect.top)*height/rect.height;
   }
